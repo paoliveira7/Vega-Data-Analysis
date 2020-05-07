@@ -1,4 +1,17 @@
 # Vega-Data-Analysis
+install.packages("data.table")
+install.packages("quantmod")
+install.packages("PerformanceAnalytics")
+install.packages("TTR")
+library(data.table)
+library(quantmod)
+library(PerformanceAnalytics)
+library(TTR)
+install.packages("dplyr")
+install.packages("PortfolioAnalytics")
+library(PortfolioAnalytics)
+library(dplyr)
+
 tickers <- c("ITSA4.SA", "EGIE3.SA", "WEGE3.SA", "KLBN11.SA")
 weights <- c(.25, .25, .25, .25)
 
