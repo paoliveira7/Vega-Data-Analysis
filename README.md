@@ -14,7 +14,7 @@ library(PortfolioAnalytics)
 library(dplyr)
 
 #Primeiro passo deste modelo simples é definir pela variável ticker e weights os ativos que visamos analisar e os pesos na carteira.
-#Isso é feito através da atruição de um vetor que é um tipo de variável (caixinha) que comporta apenas 1 tipo de elemento
+#Isso é feito através da atribuição de um vetor que é um tipo de variável (caixinha) que comporta apenas 1 tipo de elemento
 
 tickers <- c("ITSA4.SA", "EGIE3.SA", "WEGE3.SA", "KLBN11.SA")
 weights <- c(.25, .25, .25, .25)
