@@ -1,0 +1,69 @@
+# PREPARANDO O AMBIENTE
+library(ggplot2)
+library(quantmod)
+
+# PUXANDO A BASE DE DADOS
+ITSA <- getSymbols.yahoo("ITSA4.SA", from = "2005-01-01", to = "2020-05-21", periodicity = "monthly", auto.assign = FALSE)
+
+# VIZUALIZAÇÃO DOS PRECOS
+head(ITSA)
+tail(ITSA)
+summary(ITSA)
+str(ITSA)
+
+
+# VAMOS PLOTAR OS GRÁFICOS DA SÉRIE DE PREÇOS ANALISADA
+
+ggplot(ITSA, aes(x = index(ITSA), y = ITSA[,6])) +
+  geom_line(color = "Darkblue")+
+  ggtitle("Série de Preços da Itaúsa - Mensal")
+  xlab("Data")+ ylab("Preços ($) ")+ theme(plot.title = element_text(hjust = 0.5))+
+  scale_x_date(date_labels = "%b %y", date_breaks = "1 months")
+  
+
+#SELECIONANDO UMA PARTE DA BASE
+ITSA_mm <- subset(ITSA, index(ITSA) >= "2015-01-01")
+
+# CRIANDO MÉDIAS MÓVEIS PARA COMPARAR COM O COMPARTAMENTO DOS PREÇOS
+ITSA_mm10 <- rollmean(ITSA_mm[,6], 10, fill = list(NA, NULL, NA), align = "right")
+ITSA_mm30 <- rollmean(ITSA_mm[,6], 30, fill = list(NA, NULL, NA), align = "right")
+
+ITSA_mm$mm10 <- coredata(ITSA_mm10)
+ITSA_mm$mm30 <- coredata(ITSA_mm30)
+
+
+# VAMOS PLOTAR OS GRÁFICOS COM AS MÉDIAS MÓVEIS
+
+ggplot(ITSA_mm ,aes(x = index(ITSA_mm))) + geom_line(aes( y = ITSA_mm[,6], color = "ITSA"))+
+  ggtitle("Série de Preços da Itaúsa - Mensal")+
+  geom_line(aes(y = ITSA_mm$mm10, color = "MM10"))+
+  geom_line(aes(y = ITSA_mm$mm30, color = "MM30"))+
+  xlab("Data")+ ylab("Preços ($)")+ 
+  theme(plot.title = element_text(hjust = 0.5)) +
+  scale_x_date(date_labels = "%b %y", date_breaks = "3 months") +
+  scale_color_manual("Séries", values = c("ITSA" = "gray40", "MM10" = "firebrick4", "MM30" = "darkcyan" ))
+
+# VERIFICANDO OS RETORNOS COM OS GRÁFICOS DA BASE DO R
+plot(dailyReturn(ITSA), main = "Retorno diário de Itaúsa") 
+plot(weeklyReturn(ITSA), main = "Retorno semanal de Itaúsa") 
+plot(quarterlyReturn(ITSA),main = "Retorno Quadrimestral da Itaúsa")  
+plot(yearlyReturn(ITSA), main = "Retorno Anual da Itaúsa") 
+
+
+# PLOTANDO COM O GGPLOT
+itsa_ret <- monthlyReturn(ITSA)
+
+ggplot(itsa_ret, aes(x = index(itsa_ret), y =itsa_ret ))+
+  geom_line(color = "deepskyblue4")+
+  ggtitle("Série de Retornos Mensal da Itaúsa")+ xlab("Data")+ylab("Retorno")+
+  theme(plot.title = element_text(hjust = 0.5))+
+  scale_x_date(date_labels = "%b %y", date_breaks = "12 months")
+
+# SELECIONANDO UMA PARTE DO DATA SET E PLOTANDO
+itsa_ret19 <- subset(itsa_ret, index(ITSA) >= "2019-01-01" )
+
+ggplot(itsa_ret19, aes(x = index(itsa_ret19), y = itsa_ret19 ))+
+  geom_line(color = "deepskyblue4")+
+  ggtitle("Série de Retornos Mensal da Itaúsa")+ xlab("Data")+ylab("Retorno")+
+  theme(plot.title = element_text(hjust = 0.5))+
+  scale_x_date(date_labels = "%b %y", date_breaks = "6 months")
